@@ -1,0 +1,16 @@
+
+body {
+	font-family: monospace;
+}
+
+panel {
+	background-image: -webkit-gradient(linear, left top, right top,
+		color-stop(0.0, #ff000033),
+		color-stop(16%, #ffcc0033),
+		color-stop(32%, #ffff0033),
+		color-stop(48%, #00990033),
+		color-stop(60%, #0000ff33),
+		color-stop(76%, #33009933),
+		color-stop(1.0, #ee99ee33),
+	);
+}

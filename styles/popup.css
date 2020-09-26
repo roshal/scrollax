@@ -1,0 +1,11 @@
+
+body {
+	font-family: monospace;
+}
+
+button {
+	border: none;
+	outline: none;
+	height: 64px;
+	width: 64px;
+}

@@ -3,6 +3,7 @@
 
 !/.gitignore
 
+!/license.md
 !/manifest.json
 !/package.json
 

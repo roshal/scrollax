@@ -3,7 +3,7 @@ const scroll = (object, sender) => {
 	if (sender.tab == null) {
 		return
 	}
-	console.log({object})
+	console.log('scroll', object)
 	const index = (() => {
 		if (0 < object.y) {
 			return sender.tab.index + 1
@@ -30,23 +30,20 @@ const scroll = (object, sender) => {
 	})
 }
 
+const status = (object, sender) => {
+	if (sender.tab == null) {
+		return
+	}
+	console.log('status', sender.tab.index, object.right, object.bottom)
+}
+
 const rule = {
 	conditions: [
-		new chrome.declarativeContent.PageStateMatcher({
-			pageUrl: {
-				hostEquals: 'developer.chrome.com',
-			},
-		}),
-		new chrome.declarativeContent.PageStateMatcher({
-			pageUrl: {
-				hostEquals: 'lenteh.ru',
-			},
-		}),
-		new chrome.declarativeContent.PageStateMatcher({
-			pageUrl: {
-				hostEquals: 'tjournal.ru',
-			},
-		}),
+		//new chrome.declarativeContent.PageStateMatcher({
+		//	pageUrl: {
+		//		hostSuffix: 'tjournal.ru',
+		//	},
+		//}),
 	],
 	actions: [
 		new chrome.declarativeContent.ShowPageAction(),
@@ -54,11 +51,11 @@ const rule = {
 }
 
 chrome.runtime.onInstalled.addListener((details) => {
-	console.log('details.reason', details.reason)
+	console.log('details.reason', '=', details.reason)
 	chrome.storage.sync.set({
 		color: '#000',
 	}, () => {
-		console.log('the color is green')
+		console.log('the color is black')
 	})
 	chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
 		chrome.declarativeContent.onPageChanged.addRules([rule]);
@@ -80,7 +77,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	const array = {
-		scroll,
+		scroll, status,
 	}
 	array[message.key](message.object, sender, sendResponse)
 })

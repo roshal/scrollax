@@ -6,5 +6,5 @@ fetch('/stable.css').then((response) => {
 }).then((styles) => {
 	return chrome.devtools.panels.applyStyleSheet(styles)
 }).catch((error) => {
-	console.error(error)
+	//console.error(error)
 })

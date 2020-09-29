@@ -13,10 +13,10 @@
 	"page_action": {
 		"default_popup": "/pages/popup.html",
 		"default_icon": {
-			"16": "/icons/popup-4b1.png",
-			"32": "/icons/popup-5b1.png",
-			"48": "/icons/popup-4b3.png",
-			"128": "/icons/popup-7b1.png"
+			"16": "/icons/10.png",
+			"32": "/icons/20.png",
+			"48": "/icons/30.png",
+			"128": "/icons/80.png"
 		}
 	},
 	"content_scripts": [

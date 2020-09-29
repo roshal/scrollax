@@ -39,11 +39,11 @@ const status = (object, sender) => {
 
 const rule = {
 	conditions: [
-		//new chrome.declarativeContent.PageStateMatcher({
-		//	pageUrl: {
-		//		hostSuffix: 'tjournal.ru',
-		//	},
-		//}),
+		new chrome.declarativeContent.PageStateMatcher({
+			pageUrl: {
+				hostSuffix: 'roshal.online',
+			},
+		}),
 	],
 	actions: [
 		new chrome.declarativeContent.ShowPageAction(),

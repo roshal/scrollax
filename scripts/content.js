@@ -63,7 +63,6 @@ window.addEventListener('mousewheel', (event) => {
 	} else {
 		const array = [event.deltaX, event.deltaY].map(sign)
 		const [right, bottom] = calculate(array)
-		console.log('target', right, bottom)
 		const object = {
 			element: event.target, right, bottom,
 		}

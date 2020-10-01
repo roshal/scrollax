@@ -1,24 +1,16 @@
 
-const colors = [
-	'#000',
-	'#fff',
-	'#f00',
-	'#ff0',
-	'#0f0',
-	'#0ff',
-	'#00f',
-	'#f0f',
-]
+const keys = ['limit', 'piece', 'pitch', 'ratio']
 
-for (const color of colors) {
-	const element = document.createElement('button')
-	element.style.backgroundColor = color
-	element.addEventListener('click', () => {
+for (const key of keys) {
+	const element = document.createElement('input')
+	chrome.storage.sync.get(key, (object) => {
+		element.value = object[key]
+	})
+	element.addEventListener('change', (event) => {
 		chrome.storage.sync.set({
-			color,
+			[key]: event.target.value,
 		}, () => {
-			const string = ['color', 'is', color].join(' ')
-			console.log(string)
+			console.log(key, event.target.value)
 		})
 	})
 	document.body.appendChild(element)

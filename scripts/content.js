@@ -38,7 +38,8 @@ const calculate = (array) => {
 		shift *= piece
 		return array.reduce((accumulator, stamp) => {
 			const delta = value - stamp
-			return accumulator + shift * ratio * cos(pitch * delta / limit) ** 2
+			accumulator += shift * ratio * cos(pitch * delta / limit) ** 2
+			return 1024 < accumulator ? 1024 : accumulator
 		}, shift)
 	})
 }
@@ -52,26 +53,69 @@ const scroll = (object) => {
 	}
 }
 
-window.addEventListener('mousewheel', (event) => {
-	if (event.type !== 'mousewheel' || event.ctrlKey || event.metaKey) {
+const generate = (event) => {
+	if (event.metaKey) {
 		return
 	}
-	if (event.altKey && event.shiftKey == null) {
-		chrome.runtime.sendMessage({
-			object, key: 'scroll',
-		})
-	} else {
-		const array = [event.deltaX, event.deltaY].map(sign)
-		const [right, bottom] = calculate(array)
-		const object = {
-			element: event.target, right, bottom,
-		}
-		event.preventDefault()
-		chrome.runtime.sendMessage({
-			object, key: 'status',
-		})
-		scroll(object)
+	const array = [event.deltaX, event.deltaY].map(sign)
+	const [right, bottom] = calculate(array)
+	const object = {
+		right, bottom, element: event.target,
 	}
-}, {
-	passive: false,
+	if (event.altKey) {
+		return {
+			object, key: 'scroll',
+		}
+	}
+	event.preventDefault()
+	if (event.shiftKey) {
+		object.positive = 0 < event.deltaY
+		return {
+			object, key: event.ctrlKey ? 'move' : 'update',
+		}
+	}
+	scroll(object)
+	return {
+		object, key: 'status',
+	}
+}
+
+const wheel = (event) => {
+	const object = generate(event)
+	if (object && typeof chrome.app.isInstalled !== 'undefined') {
+		chrome.runtime.sendMessage(object)
+	}
+}
+
+const activate = () => {
+	window.addEventListener('wheel', wheel, {
+		passive: false,
+	})
+}
+
+chrome.runtime.onMessage.addListener((message, sender, send) => {
+	if (message.key === 'activate') {
+		send(9876543210)
+		activate()
+	}
+})
+
+activate()
+
+window.addEventListener('keydown', (event) => {
+	if (event.altKey || event.metaKey) {
+		return
+	}
+	console.log(event)
+	if (event.ctrlKey && event.key === ' ') {
+		scroll({
+			element: window,
+			bottom: event.shiftKey ? -256 : 256,
+		})
+		event.preventDefault()
+	}
+})
+
+window.addEventListener('scroll', (event) => {
+	console.log(9, event)
 })

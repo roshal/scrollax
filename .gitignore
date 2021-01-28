@@ -2,9 +2,9 @@
 /*
 
 !/.gitignore
-
 !/license.md
 !/manifest.json
+!/package-scripts.js
 !/package.json
 
 !/docs/

@@ -1,0 +1,4 @@
+
+exit
+
+npx rollup --config

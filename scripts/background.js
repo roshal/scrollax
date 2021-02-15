@@ -1,10 +1,19 @@
 
 const highlight = (object, sender) => {
-	console.log('--highlight')
+	console.log('--highlight', sender)
 	const index = sender.tab.index - (object.positive ? -1 : 1)
-	chrome.tabs.highlight({
-		tabs: index,
-		// windowId: sender.tab.windowId,
+	if (index < 0) {
+		return
+	}
+	chrome.tabs.query({
+		currentWindow: true, index: index,
+	}, (tabs) => {
+		if (tabs.length === 0) {
+			return
+		}
+		chrome.tabs.highlight({
+			tabs: index,
+		})
 	})
 }
 
@@ -14,7 +23,6 @@ const move = (object, sender) => {
 		currentWindow: true, highlighted: true,
 	}, (tabs) => {
 		const array = tabs.map((tab) => {
-			console.log(tab.id, tab)
 			return tab.id
 		})
 		const index = tabs.reduce((accumulator, tab) => {

@@ -1,9 +1,6 @@
 
 const scroll = (object, sender) => {
-	console.log('scroll', object)
-	if (sender.tab == null) {
-		return
-	}
+	console.log('--scroll', object)
 	const index = (() => {
 		if (0 < object.y) {
 			return sender.tab.index + 1
@@ -29,33 +26,39 @@ const scroll = (object, sender) => {
 }
 
 const move = (object, sender) => {
-	console.log('move')
-	if (sender.tab == null) {
-		return
-	}
-	console.log(sender)
-	chrome.tabs.getAllInWindow(sender.tab.windowId, (tabs) => {
-		const index = sender.tab.index - (object.positive ? -1 : 1)
-		chrome.tabs.move(sender.tab.id, {
-			index: index % tabs.length,
+	console.log('--move')
+	chrome.tabs.query({
+		currentWindow: true, highlighted: true,
+	}, (tabs) => {
+		const array = tabs.map((tab) => {
+			console.log(tab.id, tab)
+			return tab.id
+		})
+		const index = tabs.reduce((accumulator, tab) => {
+			return accumulator.index < tab.index ? accumulator : tab
+		}).index - (object.positive ? -1 : 1)
+		if (object.positive) {
+			chrome.tabs.move(array, {
+				index: -1,
+			})
+		}
+		chrome.tabs.move(array, {
+			index: index < 0 ? 0 : index,
 		})
 	})
 }
 
-const update = (object, sender) => {
-	console.log('update')
-	if (sender.tab == null) {
-		return
-	}
+const highlight = (object, sender) => {
+	console.log('--highlight')
 	const index = sender.tab.index - (object.positive ? -1 : 1)
 	chrome.tabs.highlight({
-		windowId: sender.tab.windowId,
 		tabs: index,
+		// windowId: sender.tab.windowId,
 	})
 }
 
 const status = (object, sender) => {
-	console.log('status', sender.tab.index, object.right, object.bottom)
+	console.log('--status', sender.tab.index, object.right, object.bottom)
 	if (sender.tab == null) {
 		return
 	}
@@ -101,7 +104,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	const array = {
-		move, update, scroll, status,
+		move, highlight, scroll, status,
 	}
 	array[message.key](message.object, sender, sendResponse)
 })

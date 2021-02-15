@@ -71,7 +71,7 @@ const generate = (event) => {
 	if (event.shiftKey) {
 		object.positive = 0 < event.deltaY
 		return {
-			object, key: event.ctrlKey ? 'move' : 'update',
+			object, key: event.ctrlKey ? 'move' : 'highlight',
 		}
 	}
 	scroll(object)

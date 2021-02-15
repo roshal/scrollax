@@ -1,27 +1,10 @@
 
-const scroll = (object, sender) => {
-	console.log('--scroll', object)
-	const index = (() => {
-		if (0 < object.y) {
-			return sender.tab.index + 1
-		}
-		if (object.y < 0) {
-			return sender.tab.index - 1
-		}
-	})()
-	if (index == null) {
-		return
-	}
-	chrome.storage.sync.set({
-		value: object.y,
-	})
-	chrome.tabs.getCurrent((tab) => {
-		if (tab == null) {
-			return
-		}
-		chrome.tabs.update(tab.id, {
-			active: true,
-		})
+const highlight = (object, sender) => {
+	console.log('--highlight')
+	const index = sender.tab.index - (object.positive ? -1 : 1)
+	chrome.tabs.highlight({
+		tabs: index,
+		// windowId: sender.tab.windowId,
 	})
 }
 
@@ -48,20 +31,37 @@ const move = (object, sender) => {
 	})
 }
 
-const highlight = (object, sender) => {
-	console.log('--highlight')
-	const index = sender.tab.index - (object.positive ? -1 : 1)
-	chrome.tabs.highlight({
-		tabs: index,
-		// windowId: sender.tab.windowId,
-	})
-}
-
 const status = (object, sender) => {
 	console.log('--status', sender.tab.index, object.right, object.bottom)
 	if (sender.tab == null) {
 		return
 	}
+}
+
+const update = (object, sender) => {
+	console.log('--update', object)
+	const index = (() => {
+		if (0 < object.y) {
+			return sender.tab.index + 1
+		}
+		if (object.y < 0) {
+			return sender.tab.index - 1
+		}
+	})()
+	if (index == null) {
+		return
+	}
+	chrome.storage.sync.set({
+		value: object.y,
+	})
+	chrome.tabs.getCurrent((tab) => {
+		if (tab == null) {
+			return
+		}
+		chrome.tabs.update(tab.id, {
+			active: true,
+		})
+	})
 }
 
 const rule = {
@@ -104,7 +104,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	const array = {
-		move, highlight, scroll, status,
+		highlight, move, status, update,
 	}
 	array[message.key](message.object, sender, sendResponse)
 })

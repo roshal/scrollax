@@ -64,7 +64,7 @@ const generate = (event) => {
 	}
 	if (event.altKey) {
 		return {
-			object, key: 'scroll',
+			object, key: 'update',
 		}
 	}
 	event.preventDefault()
